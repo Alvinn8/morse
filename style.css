@@ -1,6 +1,28 @@
+#morseTable {
+    column-count: 2;
+    width: 572px;
+}
 .entry {
-    font-size: 30px;
+    font-size: 20px;
+    margin: 10px;
 }
 .char {
     margin-right: 30px;
+    font-family: Arial, sans-serif;
+    width: 28px;
+    display: inline-block;
+}
+.dot, .dash {
+    margin-right: 10px;
+    display: inline-block;
+    background-color: black;
+    width: 10px;
+    height: 10px;
+    line-height: 10px;
+}
+.dot {
+    border-radius: 50%;
+}
+.dash {
+    width: 30px;
 }
