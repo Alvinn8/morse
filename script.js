@@ -68,43 +68,47 @@ function getAllMorse() {
     }
     return ret;
 }
-
-var morseTable = document.getElementById("morseTable");
-
-var keys = Object.keys(morse.alphabet).concat(Object.keys(morse.digits));
-var renderedFirstDigit = false;
-for (var char of keys) {
-    var value = morse.alphabet[char] || morse.digits[char] || morse.extras[char];
-    var elem = document.createElement("p");
-    if (morse.digits[char] && !renderedFirstDigit) {
-        renderedFirstDigit = true;
-        elem.style.marginTop = "33px";
-    }
-    elem.className = "entry";
-    var charElem = document.createElement("span");
-    charElem.className = "char";
-    var valueElem = document.createElement("span");
-    valueElem.className = "value";
-
-    charElem.appendChild(document.createTextNode(char.toUpperCase()));
-    for (var valueChar of value) {
-        var valueCharElem = document.createElement("span");
-        valueCharElem.innerHTML = "&nbsp;";
-        if (valueChar == ".") {
-            valueCharElem.className = "dot";
-        } else if (valueChar == "-") {
-            valueCharElem.className = "dash";
-        } else {
-            valueCharElem.appendChild(document.createTextNode(valueChar));
+    
+window.addEventListener("DOMContentLoaded", function() {
+    
+    var morseTable = document.getElementById("morseTable");
+    
+    var keys = Object.keys(morse.alphabet).concat(Object.keys(morse.digits));
+    var renderedFirstDigit = false;
+    for (var char of keys) {
+        var value = morse.alphabet[char] || morse.digits[char] || morse.extras[char];
+        var elem = document.createElement("p");
+        if (morse.digits[char] && !renderedFirstDigit) {
+            renderedFirstDigit = true;
+            elem.style.marginTop = "33px";
         }
-        valueElem.appendChild(valueCharElem);
+        elem.className = "entry";
+        var charElem = document.createElement("span");
+        charElem.className = "char";
+        var valueElem = document.createElement("span");
+        valueElem.className = "value";
+    
+        charElem.appendChild(document.createTextNode(char.toUpperCase()));
+        for (var valueChar of value) {
+            var valueCharElem = document.createElement("span");
+            valueCharElem.innerHTML = "&nbsp;";
+            if (valueChar == ".") {
+                valueCharElem.className = "dot";
+            } else if (valueChar == "-") {
+                valueCharElem.className = "dash";
+            } else {
+                valueCharElem.appendChild(document.createTextNode(valueChar));
+            }
+            valueElem.appendChild(valueCharElem);
+        }
+    
+        elem.appendChild(charElem);
+        elem.appendChild(valueElem);
+    
+        morseTable.appendChild(elem);
     }
 
-    elem.appendChild(charElem);
-    elem.appendChild(valueElem);
-
-    morseTable.appendChild(elem);
-}
+});
 
 function makeMorseTree() {
     var tree = {
