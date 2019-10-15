@@ -1,3 +1,5 @@
+// https://en.wikipedia.org/wiki/Prosigns_for_Morse_code#Official_International_Morse_code_procedure_signs
+
 var morse = {
     alphabet: {
         a: ".-",

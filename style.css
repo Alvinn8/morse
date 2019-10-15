@@ -26,3 +26,23 @@
 .dash {
     width: 30px;
 }
+@media screen and (max-width: 572px) {
+    #morseTable {
+        width: auto;
+    }
+    .entry {
+        font-size: 15px;
+    }
+    .char {
+        margin-right: 10px;
+    }
+    .dot, .dash {
+        height: 5px;
+    }
+    .dot {
+        width: 5px;
+    }
+    .dash {
+        width: 15px;
+    }
+}
