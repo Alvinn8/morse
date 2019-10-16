@@ -75,13 +75,18 @@ window.addEventListener("DOMContentLoaded", function() {
     
     var morseTable = document.getElementById("morseTable");
     
-    var keys = Object.keys(morse.alphabet).concat(Object.keys(morse.digits));
+    var keys = Object.keys(morse.alphabet).concat(Object.keys(morse.digits)).concat(Object.keys(morse.extras));
     var renderedFirstDigit = false;
+    var renderedFirstExtra = false;
     for (var char of keys) {
         var value = morse.alphabet[char] || morse.digits[char] || morse.extras[char];
         var elem = document.createElement("p");
         if (morse.digits[char] && !renderedFirstDigit) {
             renderedFirstDigit = true;
+            elem.style.marginTop = "33px";
+        }
+        if (morse.extras[char] && !renderedFirstExtra) {
+            renderedFirstExtra = true;
             elem.style.marginTop = "33px";
         }
         elem.className = "entry";
