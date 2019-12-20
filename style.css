@@ -1,3 +1,6 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
 #morseTable {
     column-count: 2;
     width: 572px;
@@ -26,6 +29,59 @@
 }
 .dash {
     width: 30px;
+}
+#searchContainer {
+    text-align: center;
+}
+#search {
+    padding: 5px;
+}
+#practiseTitle {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 100;
+}
+#charLearningContainerContent:not(.active) {
+    opacity: 0.3;
+    position: absolute;
+    pointer-events: none;
+    z-index: -1;
+}
+#charLearningContainer {
+    width: 50%;
+    display: inline-block;
+    position: relative;
+}
+#charLearningContainerStartContainer {
+    text-align: center;
+}
+#charLearningContainerStartButton {
+    padding: 10px 15px;
+    font-size: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #eee;
+}
+#charLearningValue {
+    height: 10px;
+    display: block;
+    margin-bottom: 25px;
+}
+#charLearningResult {
+    padding: 5px;
+}
+#charLearningInput {
+    width: 13px;
+    outline: 0;
+    padding: 5px;
+}
+#stopPracticingMessage {
+    color: white;
+    font-size: 20px;
+    display: none;
+    position: absolute;
+    top: 50%;
+    margin-top: -11px;
+    margin-left: 100px;
 }
 @media screen and (max-width: 572px) {
     #morseTable {

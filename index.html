@@ -12,7 +12,37 @@
 
     </head>
     <body>
-        <div id="morseTable"></div>
+        <div id="searchContainer">
+            <input id="search" autocomplete="off" placeholder="Search">
+        </div>
+        <div id="morseTable">
+            <span id="stopPracticingMessage">Click to stop practicing</span>
+        </div>
         <div id="morseTree"></div>
+        <div id="practise">
+            <h1 id="practiseTitle">Practise</h1>
+            <hr>
+            <div id="charLearningContainer">
+                <form>
+                    <input name="charLearningType" type="radio" id="charLearningType1" checked>
+                    <label for="charLearningType1">Sound and Visible</label>
+
+                    <input name="charLearningType" type="radio" id="charLearningType2">
+                    <label for="charLearningType2">Only Sound</label>
+
+                    <input name="charLearningType" type="radio" id="charLearningType3">
+                    <label for="charLearningType3">Only Visible</label>
+                </form>
+                <div id="charLearningContainerContent">
+                    <span id="charLearningValue"></span>
+                    <input id="charLearningInput">
+                    <button id="charLearningDone">Done</button>
+                    <span id="charLearningResult"></span>
+                </div>
+                <div id="charLearningContainerStartContainer">
+                    <button id="charLearningContainerStartButton">Start</button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

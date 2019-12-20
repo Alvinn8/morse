@@ -52,6 +52,8 @@ var morse = {
         ")": "-.--.-"
     }
 };
+var playingMorseSound = false;
+var isPracticing = false;
 
 function reverseObject(object) {
     var ret = {};
@@ -71,7 +73,7 @@ function getAllMorse() {
     return ret;
 }
     
-window.addEventListener("DOMContentLoaded", function() {
+window.addEventListener("DOMContentLoaded", function(e) {
     
     var morseTable = document.getElementById("morseTable");
     
@@ -96,6 +98,8 @@ window.addEventListener("DOMContentLoaded", function() {
         valueElem.className = "value";
     
         charElem.appendChild(document.createTextNode(char.toUpperCase()));
+        elem.setAttribute("char", char);
+        elem.setAttribute("value", value);
         for (var valueChar of value) {
             var valueCharElem = document.createElement("span");
             valueCharElem.innerHTML = "&nbsp;";
@@ -114,6 +118,66 @@ window.addEventListener("DOMContentLoaded", function() {
     
         morseTable.appendChild(elem);
     }
+
+    window.addEventListener("keydown", function(e) {
+        if (!document.querySelector(":focus") || (document.querySelector(":focus") && !document.querySelector(":focus").tagName == "INPUT")) {
+            document.getElementById("search").focus();
+        }
+    });
+    document.getElementById("search").addEventListener("input", function(e) {
+        var query = document.getElementById("search").value.toUpperCase();
+
+        if (!query) document.getElementById("search").blur();
+
+        var entries = document.getElementsByClassName("entry");
+        for (var i = 0; i < entries.length; i++) {
+            var entry = entries[i];
+            if (!entry
+            || entry.getAttribute("char") && entry.getAttribute("char").toUpperCase().startsWith(query)
+            || entry.getAttribute("value") && entry.getAttribute("value").toUpperCase().startsWith(query)) {
+                entry.style.opacity = 1;
+            } else {
+                entry.style.opacity = 0.2;
+            }
+        }
+    });
+    document.getElementById("charLearningContainerStartButton").addEventListener("click", function(e) {
+        isPracticing = true;
+        document.getElementById("charLearningContainerContent").className = "active";
+        document.getElementById("charLearningContainerStartContainer").style.display = "none";
+        document.getElementById("morseTable").style.backgroundColor = "black";
+        document.getElementById("stopPracticingMessage").style.display = "block";
+        newCharLearningRound();
+    });
+    document.getElementById("charLearningDone").addEventListener("click", function(e) {
+        if (playingMorseSound) return;
+
+        var enteredValueElem = document.getElementById("charLearningInput");
+        var enteredValue = enteredValueElem.value.toUpperCase();
+        enteredValueElem.value = "";
+        var correctValue = document.getElementById("charLearningValue").getAttribute("answer").toUpperCase();
+        var result = document.getElementById("charLearningResult");
+        result.style.display = "inline";
+        playingMorseSound = true;
+        if (enteredValue == correctValue) {
+            result.style.backgroundColor = "lime";
+            result.innerHTML = "Correct!";
+            setTimeout(newCharLearningRound, 500);
+        } else {
+            result.style.backgroundColor = "red";
+            result.innerHTML = "Incorrect, it was "+ correctValue;
+            setTimeout(newCharLearningRound, 2000);
+        }
+    });
+    document.getElementById("charLearningInput").addEventListener("keydown", function(e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            document.getElementById("charLearningDone").click();
+        }
+    });
+    morseTable.addEventListener("click", function(e) {
+        if (isPracticing) stopCharLearning();
+    });
 
 });
 
@@ -144,4 +208,84 @@ function makeMorseTree() {
     }
     handleMorse(tree);
     return tree;
+}
+
+function playMorseSound(msg) {
+    if (!window.audio) {
+        var AudioContext = window.AudioContext || window.webkitAudioContext;
+        window.audio = new AudioContext();
+    }
+    var speed = 15;
+    var frequency = 600;
+    var dotLength = 1.2 / speed;
+
+    var startTime = audio.currentTime;
+    var time = audio.currentTime;
+
+    var oscillator = audio.createOscillator();
+    oscillator.type = "sine";
+    oscillator.frequency.value = frequency;
+
+    var gain = audio.createGain();
+    gain.gain.setValueAtTime(0, time);
+    oscillator.connect(gain);
+    gain.connect(audio.destination);
+
+    for (var i = 0; i < msg.length; i++) {
+        var char = msg[i];
+        if (char == ".") {
+            gain.gain.setValueAtTime(1, time);
+            time += dotLength;
+            gain.gain.setValueAtTime(0, time);
+            time += dotLength;
+        } else if (char == "-") {
+            gain.gain.setValueAtTime(1, time);
+            time += 3 * dotLength;
+            gain.gain.setValueAtTime(0, time);
+            time += dotLength;
+        } else if (char == " ") {
+            time += 7 * dotLength;
+        } else {
+            console.error("Unknown char while playing morse code, "+ char);
+        }
+    }
+
+    setTimeout(function() {
+        document.getElementById("charLearningInput").focus();
+        playingMorseSound = false;
+    }, (time - startTime) * 1000);
+
+    oscillator.start();
+}
+
+function newCharLearningRound() {
+    document.getElementById("charLearningResult").style.display = "none";
+    var valueElem = document.getElementById("charLearningValue");
+    valueElem.innerHTML = "";
+
+    var all = getAllMorse();
+    var rand = Math.floor(Math.random() * Object.keys(all).length);
+    var value = Object.values(all)[rand];
+    var char = Object.keys(all)[rand];
+    valueElem.setAttribute("answer", char);
+
+    if (document.getElementById("charLearningType1").checked || document.getElementById("charLearningType3").checked) {
+        for (var i = 0; i < value.length; i++) {
+            var char = value[i];
+            var elem = document.createElement("span");
+            elem.innerHTML = "&nbsp;";
+            if (char == ".") elem.className = "dot";
+            else if (char == "-") elem.className = "dash";
+            valueElem.appendChild(elem);
+        }
+    }
+    if (document.getElementById("charLearningType1").checked || document.getElementById("charLearningType2").checked) playMorseSound(value);
+    else playingMorseSound = false;
+}
+function stopCharLearning() {
+    isPracticing = false;
+    document.getElementById("charLearningContainerContent").className = null;
+    document.getElementById("charLearningContainerStartContainer").style.display = "block";
+    document.getElementById("morseTable").style.backgroundColor = null;
+    document.getElementById("stopPracticingMessage").style.display = "none";
 }
