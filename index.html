@@ -12,18 +12,32 @@
 
     </head>
     <body>
+        <h1>Decoding / Translating morse code</h1>
+        <p id="instructions">If you're usign this website while trying to decode some morse code. You can use the search box. If you hear a dit/dot, press . and if you hear a dah/dash, pres -. All morse code entries that don't match will become slightly transparent. And if there is a morse code entry matching perfectly, it will be highlighted in green. If you press enter, the character highlighted in green will be added to the text message below this table. So whenever you hear that the character you're trying to decode is done you hit enter and it will be added to the message down below</p>
         <div id="searchContainer">
             <input id="search" autocomplete="off" placeholder="Search">
+            <div id="prosign"></div>
         </div>
         <div id="morseTable">
             <span id="stopPracticingMessage">Click to stop practicing</span>
+            <div id="morseTableContent"></div>
+            <div id="inputtedMessage"></div>
         </div>
         <div id="morseTree"></div>
-        <div id="practise">
-            <h1 id="practiseTitle">Practise</h1>
+        <div id="practice">
+            <h1 id="practiceTitle">Practice</h1>
             <hr>
+            <div id="generalPracticeSettings">
+                <label for="practiceFrequency" id="practiceFrequencyValue">600</label>
+                <input type="range" id="practiceFrequency" value="600" min="200" max="2000">
+                <label for="practiceFrequency">Frequency</label>
+                <hr width="1" size="50" class="verticalLine">
+                <input id="practiceWpm" type="number" value="15" min="3" max="120">
+                <label for="practiceWpm">WPM (words per minute)</label>
+            </div>
+            <br>
             <div id="charLearningContainer">
-                <form>
+                <form id="charLearningType">
                     <input name="charLearningType" type="radio" id="charLearningType1" checked>
                     <label for="charLearningType1">Sound and Visible</label>
 

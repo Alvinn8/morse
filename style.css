@@ -1,14 +1,24 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
 }
+#instructions {
+    max-width: 600px;
+}
 #morseTable {
-    column-count: 2;
     width: 572px;
+}
+#morseTableContent {
+    column-count: 2;
 }
 .entry {
     font-size: 16px;
     margin: 9px 0px;
     white-space: nowrap;
+    border-radius: 10px;
+    padding: 5px;
+}
+.entry.highlighted {
+    border: 4px solid lime;
 }
 .char {
     margin-right: 30px;
@@ -82,6 +92,40 @@ body {
     top: 50%;
     margin-top: -11px;
     margin-left: 100px;
+}
+#practiceFrequencyValue {
+    width: 36px;
+    display: inline-block;
+}
+#generalPracticeSettings {
+    text-align: center;
+}
+.verticalLine {
+    display: inline;
+    margin: 0px 20px;
+}
+#practiceWpm {
+    width: 40px;
+    padding: 5px;
+}
+#charLearningType {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.inputtedMessageChar {
+    padding: 1px;
+    font-size: 30px;
+}
+.inputtedMessageChar.unknown::before {
+    content: '?';
+    background-color: #bbb;
+    color: white;
+    padding: 0px 5px;
+}
+.inputtedMessageChar.prosign {
+    background-color: #bbb;
+    color: white;
+    padding: 0px 5px;
 }
 @media screen and (max-width: 572px) {
     #morseTable {

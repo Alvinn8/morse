@@ -52,6 +52,29 @@ var morse = {
         ")": "-.--.-"
     }
 };
+var prosigns = {
+    "-.-.-": {
+        shortName: "START",
+        longName: "Start of transmission/message",
+        description: "Sent just before a morse code message is sent.",
+        type: "amateur radio prosign"
+    },
+    "........": {
+        shortName: "ERROR",
+        longName: "Error/Correction",
+        description: "The morse sent before this was incorrect, after this is the correct morse",
+        type: "amateur radio prosign and international official procedure sign"
+    },
+    "...---...": {
+        shortName: "SOS",
+        longName: "SOS"
+    },
+    ".-.-.": {
+        shortName: "END",
+        longName:"End of transmission",
+        type: "international official procedure sign"
+    }
+};
 var playingMorseSound = false;
 var isPracticing = false;
 
@@ -75,7 +98,7 @@ function getAllMorse() {
     
 window.addEventListener("DOMContentLoaded", function(e) {
     
-    var morseTable = document.getElementById("morseTable");
+    var morseTable = document.getElementById("morseTableContent");
     
     var keys = Object.keys(morse.alphabet).concat(Object.keys(morse.digits)).concat(Object.keys(morse.extras));
     var renderedFirstDigit = false;
@@ -124,23 +147,31 @@ window.addEventListener("DOMContentLoaded", function(e) {
             document.getElementById("search").focus();
         }
     });
-    document.getElementById("search").addEventListener("input", function(e) {
-        var query = document.getElementById("search").value.toUpperCase();
-
-        if (!query) document.getElementById("search").blur();
-
-        var entries = document.getElementsByClassName("entry");
-        for (var i = 0; i < entries.length; i++) {
-            var entry = entries[i];
-            if (!entry
-            || entry.getAttribute("char") && entry.getAttribute("char").toUpperCase().startsWith(query)
-            || entry.getAttribute("value") && entry.getAttribute("value").toUpperCase().startsWith(query)) {
-                entry.style.opacity = 1;
-            } else {
-                entry.style.opacity = 0.2;
+    document.getElementById("search").addEventListener("keydown", function(e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            var entry = document.getElementsByClassName("entry highlighted")[0];
+            var search = document.getElementById("search");
+            var morse = search.value;
+            var elem = document.createElement("span");
+            var hasChar = entry == null ? false : entry.hasAttribute("char");
+            var char = hasChar ? entry.getAttribute("char") : null;
+            if (!hasChar && prosigns[morse]) {
+                var prosign = prosigns[morse];
+                char = prosign.shortName;
+                elem.setAttribute("isProsign", true);
+                hasChar = true;
             }
+            elem.className = "inputtedMessageChar"+ ((!hasChar) ? " unknown" : "") + (elem.getAttribute("isProsign") ? " prosign" : "");
+            if (hasChar) elem.appendChild(document.createTextNode(char.toUpperCase()));
+            elem.setAttribute("morse", morse);
+            document.getElementById("inputtedMessage").appendChild(elem);
+            search.value = "";
+            searchInput();
         }
     });
+    document.getElementById("search").addEventListener("input", searchInput);
+
     document.getElementById("charLearningContainerStartButton").addEventListener("click", function(e) {
         isPracticing = true;
         document.getElementById("charLearningContainerContent").className = "active";
@@ -177,6 +208,10 @@ window.addEventListener("DOMContentLoaded", function(e) {
     });
     morseTable.addEventListener("click", function(e) {
         if (isPracticing) stopCharLearning();
+    });
+    document.getElementById("practiceFrequency").addEventListener("input", function(e) {
+        var value =  document.getElementById("practiceFrequency").value;
+        document.getElementById("practiceFrequencyValue").innerHTML = parseInt(value);
     });
 
 });
@@ -215,8 +250,8 @@ function playMorseSound(msg) {
         var AudioContext = window.AudioContext || window.webkitAudioContext;
         window.audio = new AudioContext();
     }
-    var speed = 15;
-    var frequency = 600;
+    var speed = document.getElementById("practiceWpm").value || 15;
+    var frequency = document.getElementById("practiceFrequency").value || 600;
     var dotLength = 1.2 / speed;
 
     var startTime = audio.currentTime;
@@ -288,4 +323,40 @@ function stopCharLearning() {
     document.getElementById("charLearningContainerStartContainer").style.display = "block";
     document.getElementById("morseTable").style.backgroundColor = null;
     document.getElementById("stopPracticingMessage").style.display = "none";
+}
+function searchInput(e) {
+    var query = document.getElementById("search").value.toUpperCase();
+
+    if (!query) document.getElementById("search").blur();
+
+    var entries = document.getElementsByClassName("entry");
+    for (var i = 0; i < entries.length; i++) {
+        var entry = entries[i];
+        entry.className = "entry";
+        if (!entry
+        || (entry.getAttribute("char") && entry.getAttribute("char").toUpperCase().startsWith(query))
+        || (entry.getAttribute("value") && entry.getAttribute("value").toUpperCase().startsWith(query))) {
+            entry.style.opacity = 1;
+            if (entry
+            && (entry.getAttribute("char") && entry.getAttribute("char").toUpperCase() == query)
+            || (entry.getAttribute("value") && entry.getAttribute("value").toUpperCase() == query)) {
+                entry.className = "entry highlighted";
+            }
+        } else {
+            entry.style.opacity = 0.2;
+        }
+    }
+    if (!document.getElementsByClassName("entry highlighted").length) {
+        var prosign = prosigns[query];
+        if (prosign) {
+            var elem = document.getElementById("prosign");
+            elem.innerHTML = "";
+            if (prosign.type) elem.appendChild(document.createTextNode("This may be referancing the "+ prosign.type + " "+ prosign.longName));
+            else elem.appendChild(document.createTextNode("This could mean the prosign "+ prosign.longName));
+        } else {
+            document.getElementById("prosign").innerHTML = "";
+        }
+    } else {
+        document.getElementById("prosign").innerHTML = "";
+    }
 }
