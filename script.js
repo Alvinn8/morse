@@ -26,7 +26,8 @@ var morse = {
         v: "...-",
         w: ".--",
         x: "-..-",
-        y: "-.--"
+        y: "-.--",
+        z: "--.."
     },
     digits: {
         "0": "-----",
@@ -91,6 +92,7 @@ function getAllMorse() {
     var ret = {};
     for (var name in morse) {
         if (name == "extras") continue; // extras is disabled
+        if (name == "digits") continue; // digits is disabled
         Object.assign(ret, morse[name]);
     }
     return ret;
