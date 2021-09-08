@@ -182,6 +182,11 @@ window.addEventListener("DOMContentLoaded", function(e) {
         document.getElementById("stopPracticingMessage").style.display = "block";
         newCharLearningRound();
     });
+    document.getElementById("fastPracticeStart").addEventListener("click", function() {
+        document.getElementById("fastPracticeContainer").style.display = "block";
+        fastPracticeTime = document.getElementById("fastPracticeStartSpeed").value;
+        newFastPractice();
+    });
     document.getElementById("charLearningDone").addEventListener("click", function(e) {
         if (playingMorseSound) return;
 
@@ -208,12 +213,39 @@ window.addEventListener("DOMContentLoaded", function(e) {
             document.getElementById("charLearningDone").click();
         }
     });
+    document.getElementById("fastPracticeInput").addEventListener("keydown", function(e) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            document.getElementById("fastPracticeDone").click();
+        }
+    });
     morseTable.addEventListener("click", function(e) {
         if (isPracticing) stopCharLearning();
     });
     document.getElementById("practiceFrequency").addEventListener("input", function(e) {
         var value =  document.getElementById("practiceFrequency").value;
         document.getElementById("practiceFrequencyValue").innerHTML = parseInt(value);
+    });
+
+    document.getElementById("fastPracticeDone").addEventListener("click", function() {
+        var enteredValueElem = document.getElementById("fastPracticeInput");
+        var enteredValue = enteredValueElem.value.toUpperCase();
+        enteredValueElem.value = "";
+        var correctValue = document.getElementById("fastPracticeMorse").getAttribute("data-answer").toUpperCase();
+        var result = document.getElementById("fastPracticeResult");
+        result.style.display = "inline";
+        playingMorseSound = true;
+        if (enteredValue == correctValue) {
+            result.style.backgroundColor = "lime";
+            result.innerHTML = "Correct!";
+            fastPracticeTime = Math.round(fastPracticeTime * 0.9);
+            setTimeout(newFastPractice, 500);
+        } else {
+            result.style.backgroundColor = "red";
+            result.innerHTML = "Incorrect, it was "+ correctValue;
+            fastPracticeTime = Math.round(fastPracticeTime * 1.1);
+            setTimeout(newFastPractice, 2000);
+        }
     });
 
 });
@@ -361,4 +393,36 @@ function searchInput(e) {
     } else {
         document.getElementById("prosign").innerHTML = "";
     }
+}
+
+let fastPracticeTime = 1000;
+function newFastPractice() {
+    var all = getAllMorse();
+    var rand = Math.floor(Math.random() * Object.keys(all).length);
+    var value = Object.values(all)[rand];
+    var char = Object.keys(all)[rand];
+
+    const valueElem = document.getElementById("fastPracticeMorse");
+    valueElem.innerHTML = "";
+    valueElem.style.display = "inline-block";
+    for (var valueChar of value) {
+        var valueCharElem = document.createElement("span");
+        valueCharElem.innerHTML = "&nbsp;";
+        if (valueChar == ".") {
+            valueCharElem.className = "dot";
+        } else if (valueChar == "-") {
+            valueCharElem.className = "dash";
+        } else {
+            valueCharElem.appendChild(document.createTextNode(valueChar));
+        }
+        valueElem.appendChild(valueCharElem);
+    }
+
+    valueElem.setAttribute("data-answer", char);
+
+    document.getElementById("fastPracticeTime").innerHTML = fastPracticeTime + " ms";
+
+    setTimeout(() => {
+        valueElem.style.display = "none";
+    }, fastPracticeTime);
 }

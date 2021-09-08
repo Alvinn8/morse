@@ -58,5 +58,25 @@
                 </div>
             </div>
         </div>
+        <div id="fastPractice">
+            <h2>Fast Practise</h2>
+            <p>Morse Code characters are shown for a short amount of time.</p>
+            <label for="fastPracticeStartSpeed">Start speed (ms)</label>
+            <input type="number" id="fastPracticeStartSpeed" value="1000">
+            <br>
+            <button id="fastPracticeStart">Start</button>
+            <div id="fastPracticeContainer" style="display: none;">
+                <div id="fastPracticeMorse">
+                    <span class="dot"></span>
+                    <span class="dash"></span>
+                </div>
+                <div id="fastPracticePart1">
+                    <input type="text" id="fastPracticeInput">
+                    <button id="fastPracticeDone">Done</button>
+                    <span id="fastPracticeResult"></span>
+                    <p id="fastPracticeTime"></p>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
